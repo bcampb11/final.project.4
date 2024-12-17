@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jumping Character Game</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      overflow: hidden;
+    }
+    #game-container {
+      position: relative;
+      width: 800px;
+      height: 300px;
+      border: 2px solid #000;
+      background: url('https://www.adorama.com/alc/wp-content/uploads/2018/06/kanye-west-ye-album-cover-825x465.png') no-repeat center center / cover;
+      overflow: hidden;
+      transition: background 1s ease-in-out;
+    }
+    #player {
+      position: absolute;
+      bottom: 0;
+      left: 50px;
+      width: 50px;
+      height: 50px;
+      background: url('https://purepng.com/public/uploads/large/kanye-west-ml6.png') no-repeat center center / cover;
+    }
+    .obstacle {
+      position: absolute;
+      bottom: 0;
+      width: 50px;
+      height: 50px;
+      background: url('https://www.purchase.edu/live/image/gid/22/width/600/height/600/crop/1/src_region/0,0,2084,2084/25380_Gramophone_Icon_Only_Full_Color-01.png') no-repeat center center / cover;
+    }
+    #score {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 2px 2px 4px #000;
+    }
+    #leaderboard {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 200px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border: 1px solid #000;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      border-radius: 8px;
+    }
+    #leaderboard h3 {
+      margin: 0 0 10px 0;
+      text-align: center;
+    }
+    #leaderboard ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    #game-over-buttons {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    #game-over-buttons button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="score">Score: 0</div>
+    <div id="player"></div>
+    <div id="game-over-buttons">
+      <button onclick="playAgain()">Play Again</button>
+
+    </div>
+  </div>
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ol id="leaderboard-list"></ol>
+  </div>
+
+  <script>
+    const player = document.getElementById("player");
+    const gameContainer = document.getElementById("game-container");
+    const scoreDisplay = document.getElementById("score");
+    const leaderboardList = document.getElementById("leaderboard-list");
+    const gameOverButtons = document.getElementById("game-over-buttons");
+
+    let playerBottom = 0;
+    let gravity = 5;
+    let isJumping = false;
+    let score = 0;
+    let gameRunning = true;
+    let obstacleSpeed = 5;
+
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    updateLeaderboardDisplay();
+
+    function jump() {
+      if (!isJumping && playerBottom === 0) {
+        isJumping = true;
+        let jumpCount = 0;
+        const jumpInterval = setInterval(() => {
+          if (jumpCount > 20) {
+            clearInterval(jumpInterval);
+          }
+          playerBottom += 10;
+          player.style.bottom = playerBottom + "px";
+          jumpCount++;
+        }, 20);
+      }
+    }
+
+    function applyGravity() {
+      setInterval(() => {
+        if (playerBottom > 0) {
+          playerBottom -= gravity;
+          if (playerBottom <= 0) {
+            playerBottom = 0;
+            isJumping = false;
+          }
+          player.style.bottom = playerBottom + "px";
+        }
+      }, 20);
+    }
+
+    function createObstacle() {
+      const obstacle = document.createElement("div");
+      obstacle.classList.add("obstacle");
+      gameContainer.appendChild(obstacle);
+      let obstacleLeft = gameContainer.offsetWidth;
+      obstacle.style.left = obstacleLeft + "px";
+      let obstaclePassed = false;
+
+      const moveObstacle = setInterval(() => {
+        if (!gameRunning) {
+          clearInterval(moveObstacle);
+          obstacle.remove();
+        }
+        obstacleLeft -= obstacleSpeed;
+        obstacle.style.left = obstacleLeft + "px";
+
+        if (obstacleLeft > 50 && obstacleLeft < 90 && playerBottom < 50) {
+          clearInterval(moveObstacle);
+          gameOver();
+        }
+
+        if (!obstaclePassed && obstacleLeft < 50) {
+          if (playerBottom >= 50) {
+            score += 100;
+            scoreDisplay.textContent = `Score: ${score}`;
+            obstaclePassed = true;
+          }
+        }
+
+        if (obstacleLeft < -50) {
+          clearInterval(moveObstacle);
+          obstacle.remove();
+        }
+      }, 20);
+
+      if (gameRunning) {
+        setTimeout(createObstacle, Math.random() * 2000 + 1000);
+      }
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      saveScore(score);
+      gameOverButtons.style.display = 'block';
+    }
+
+    function saveScore(newScore) {
+      leaderboard.push(newScore);
+      leaderboard.sort((a, b) => b - a);
+      leaderboard.splice(5);
+      localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+      updateLeaderboardDisplay();
+    }
+
+    function updateLeaderboardDisplay() {
+      leaderboardList.innerHTML = "";
+      leaderboard.forEach((score, index) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `${index + 1}. ${score} points`;
+        leaderboardList.appendChild(listItem);
+      });
+    }
+
+    function playAgain() {
+      location.reload();
+    }
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        jump();
+      }
+    });
+
+    applyGravity();
+    createObstacle();
+  </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+    background: linear-gradient(to bottom, #87A7D9, #6D83A3); /* Light gradient baby blue */
+    color: #fff;
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #1E2A3A; /* Deep blue/navy */
+    padding: 10px 0;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.navbar a {
+    color: #FFDE59; /* Soft yellow */
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #fff;
+}
+
+/* Hero Section */
+.hero {
+    background: url('../assets/img/clouds.webp') no-repeat center center/cover;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+.hero h1 {
+    font-size: 72px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: #FFFFFF; /* White */
+    text-shadow: 0 6px 12px rgba(0, 0, 0, 0.8);
+    margin: 0;
+}
+
+.hero p {
+    font-size: 28px;
+    font-weight: 400;
+    margin-top: 10px;
+    color: #FFD700; /* Golden Yellow */
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+}
+
+/* Main Content Section */
+.maincontent {
+    padding: 40px 20px;
+    margin: auto;
+    max-width: 900px;
+    text-align: center;
+}
+
+.maincontent h2, .maincontent h3 {
+    color: #FFDE59;
+    margin: 20px 0;
+    font-size: 28px;
+}
+
+.maincontent p {
+    color: #f0f0f0;
+    font-size: 16px;
+    margin: 10px 0 20px;
+}
+
+.maincontent img {
+    max-width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin: 20px 0;
+}
+
+/* Lists */
+.maincontent ol, .maincontent ul {
+    list-style: none;
+    padding: 0;
+    color: #f0f0f0;
+}
+
+.maincontent li {
+    margin: 10px 0;
+    font-size: 18px;
+    background: #1E2A3A; /* Deep blue */
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Embedded Content */
+iframe {
+    margin: 20px 0;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #1E2A3A;
+    color: #fff;
+    margin-top: 40px;
+    font-size: 14px;
+}
+/* Center the Back to Top Link */
+.back-to-top {
+    position: fixed;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for exact centering */
+    text-align: center;
+}
+
+.back-to-top a {
+    text-decoration: none;
+    color: #007BFF;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.back-to-top a:hover {
+    text-decoration: underline;
+}
